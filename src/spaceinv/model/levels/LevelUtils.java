@@ -34,10 +34,6 @@ public final class LevelUtils {
             s.setX(s.getX() + xDistance);
             //s.setMoveInterval(s.getX(), s.getX() + 2 * s.getWidth());
             s.setMoveInterval(s.getX(), s.getX() + 5 * s.getWidth());
-            if (s.getDir() < 0) {
-                s.setX(s.getX() + 4 * s.getWidth());
-                s.setY(s.getY() + s.SHIPS_DY);
-            }
             xDistance = xDistance + s.getWidth() + horizonDistBetweenShip;
         }
         return ships;

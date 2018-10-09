@@ -5,19 +5,13 @@ package spaceinv.model.ships;
  */
 public class Frigate extends AbstractSpaceShip {
 
-    public Frigate(double x, double y, int dir) {
+    public Frigate(){
+        this(0,0);
+    }
+
+    public Frigate(double x,double y){
         this.setX(x);
         this.setY(y);
-        this.setDir(dir);
-        this.setType("Frigate");
-    }
-
-    public Frigate(double x, double y) {
-        this(x, y, 1);
-    }
-
-    public Frigate() {
-        this(0,0,1);
     }
 
     @Override
@@ -30,7 +24,6 @@ public class Frigate extends AbstractSpaceShip {
         Frigate copy = new Frigate();
         copy.setX(this.getX());
         copy.setY(this.getY());
-        copy.setDir(this.getDir());
         return copy;
     }
 

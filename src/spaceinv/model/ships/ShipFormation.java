@@ -1,6 +1,9 @@
 package spaceinv.model.ships;
 
 
+import spaceinv.event.Event;
+import spaceinv.event.EventService;
+import spaceinv.event.ePos;
 import spaceinv.model.IPositionable;
 import spaceinv.model.projectiles.Rocket;
 import spaceinv.model.Gun;
@@ -27,75 +30,34 @@ public class ShipFormation {
         indexToMove = ships.size() - 1;
     }
 
-    // TODO Some method to move the ships
-    public void updatePosition() {
-        for (AbstractSpaceShip curShip : ships) {
-            curShip.updatePosition();
+    public void updateFormation() {
+        for(int i = 0; i < ships.size(); i++){
+            AbstractSpaceShip ship = ships.get(i);
+            if(ship instanceof Bomber) {
+                Bomber b = (Bomber)ship;
+                b.update();
+            }else {
+                ship.update();
+            }
         }
     }
 
     // TODO Some method to remove ship hit by rocket
 
-    public void updateCollision(Rocket rocket, Gun gun) {
-        for (int i = (ships.size() - 1); i >= 0; i--) {
-//            System.out.println(i + " | " + ships.get(i));
-            if (isColliding(i, rocket, gun)) {
-                ships.remove(i);
+    private boolean isHit(Rocket rocket, AbstractSpaceShip ship){
+        return rocket.getY() <= ship.getY()+ship.getHeight() && rocket.getY() >= ship.getY() &&
+                rocket.getX() <= ship.getX()+ship.getWidth() && rocket.getX() >= ship.getX();
+    }
+
+    public void killShips(Rocket rocket){
+        for(int i = 0; i < ships.size(); i++){
+            AbstractSpaceShip ship = ships.get(i);
+            if (isHit(rocket, ship) && !rocket.isHit()) {
+                ships.remove(ship);
+                EventService.add(new Event(Event.Type.ROCKET_HIT_SHIP,new ePos(ship.getX(),ship.getY())));
+                rocket.setHit(true);
             }
         }
-    }
-
-    private boolean isColliding(int i, Rocket rocket, Gun gun) {
-        AbstractSpaceShip curShip = ships.get(i);
-
-        if (rocket != null && rocket.isAlive() && isCollidingX(curShip, rocket) && isCollidingY(curShip,rocket)) {
-            rocket.kill();
-            return true;
-        }
-
-        if (isCollidingX(curShip, gun) && isCollidingY(curShip,gun)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean isCollidingX(IPositionable a, IPositionable b) {
-        //Check left corner
-        if (a.getX() >= b.getX() && a.getX() <= (b.getX() + b.getWidth())) {
-            return true;
-        }
-
-        //Check middle
-        if ((a.getX() + a.getWidth()/2) >= b.getX() && (a.getX() + a.getWidth()/2) <= (b.getX() + b.getWidth())) {
-            return true;
-        }
-
-        //Check right corner
-        if ((a.getX() + a.getWidth()) >= b.getX() && (a.getX() + a.getWidth()) <= (b.getX() + b.getWidth())) {
-            return true;
-        }
-//        System.out.println("X = false");
-        return false;
-    }
-
-    private boolean isCollidingY(IPositionable a, IPositionable b) {
-        //Lowest point
-        if ((a.getY() + a.getHeight()) >= b.getY() && (a.getY() + a.getHeight()) <= (b.getY() + b.getHeight())) {
-            return true;
-        }
-
-        //Middle point
-        if ((a.getY() + a.getHeight()/2) >= b.getY() && (a.getY() + a.getHeight()/2) <= (b.getY() + b.getHeight())) {
-            return true;
-        }
-
-        //Highest point
-        if (a.getY() >= b.getY() && a.getY() <= (b.getY() + b.getHeight())) {
-            return true;
-        }
-//        System.out.println("Y = false");
-        return false;
     }
 
     public int size() {

@@ -6,61 +6,51 @@ import spaceinv.model.statics.OuterSpace;
 
 // Shoot by the gun
 public class Rocket implements IPositionable {
-    private static final double ROCKET_WIDTH = 15;
-    private static final double ROCKET_HEIGHT = 25;
-    private static final double ROCKET_DY = 4;
+    private double rocketSpeed = 5;
+    private double x,y;
+    private double width = 10;
+    private double height = 15;
 
-    private double ROCKET_X;
-    private double ROCKET_Y;
+    private boolean hit = false;
 
-    private boolean ROCKET_ALIVE;
-
-    public Rocket(double GUN_X, double GUN_Y, double GUN_WIDTH) {
-        this.ROCKET_X = GUN_X + (GUN_WIDTH/2);
-        this.ROCKET_Y = GUN_Y;
-        this.ROCKET_ALIVE = true;
+    public Rocket() {
+        this(0,0);
     }
 
-    public void update() {
-        this.ROCKET_Y -= ROCKET_DY;
-        if(ROCKET_Y < OuterSpace.OUTERSPACE_HEIGHT) {
-            this.ROCKET_ALIVE = false;
-        }
+    public Rocket(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public boolean isAlive() {
-        return ROCKET_ALIVE;
-    }
-
-    public void kill() {
-        ROCKET_ALIVE = false;
-    }
-
-    public void setX(double x) {
-        this.ROCKET_X = x;
-    }
-
-    public void setY(double y) {
-        this.ROCKET_Y = y;
+    public void update(){
+        y -= rocketSpeed;
     }
 
     @Override
     public double getX() {
-        return ROCKET_X;
+        return x;
     }
 
     @Override
     public double getY() {
-        return ROCKET_Y;
+        return y;
     }
 
     @Override
     public double getWidth() {
-        return ROCKET_WIDTH;
+        return width;
     }
 
     @Override
     public double getHeight() {
-        return ROCKET_HEIGHT;
+        return height;
+    }
+
+    public boolean isHit() {
+        return hit;
+    }
+
+    public void setHit(boolean hit) {
+        this.hit = hit;
     }
 }

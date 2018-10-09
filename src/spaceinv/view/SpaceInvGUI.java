@@ -14,11 +14,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import spaceinv.event.ePos;
 import spaceinv.event.Event;
 import spaceinv.event.EventService;
 import spaceinv.model.IPositionable;
 import spaceinv.model.SpaceInv;
 import spaceinv.model.levels.Level0;
+import spaceinv.model.levels.Level1;
+import spaceinv.model.levels.Level2;
 
 import static spaceinv.model.SpaceInv.GAME_HEIGHT;
 import static spaceinv.model.SpaceInv.GAME_WIDTH;
@@ -36,7 +39,7 @@ import static spaceinv.model.SpaceInv.GAME_WIDTH;
  */
 public class SpaceInvGUI extends Application {
 
-
+    private int level = 0;
     private SpaceInv spaceInv;          // Reference to the OO model
     private boolean running = false;    // Is game running?
 
@@ -100,7 +103,18 @@ public class SpaceInvGUI extends Application {
 
     private void newGame() {
 
-        spaceInv = new SpaceInv(new Level0());// TODO Create the OO model by using a Level parameter
+        level++;
+        switch (level){
+            case 1:
+                spaceInv = new SpaceInv(new Level1());
+                break;
+            case 2:
+                spaceInv = new SpaceInv(new Level2());
+                break;
+            default:
+                spaceInv = new SpaceInv(new Level0());
+                break;
+        }
 
         renderBackground();
         timer.start();
@@ -121,7 +135,8 @@ public class SpaceInvGUI extends Application {
 
     private void handleModelEvent(Event evt) {
         if (evt.type == Event.Type.ROCKET_HIT_SHIP) {
-            // TODO
+            ePos b = (ePos)evt.data;
+            renderExplosion(b.getX(),b.getY());
         } else if (evt.type == Event.Type.ROCKET_LAUNCHED) {
             // TODO
         } else if (evt.type == Event.Type.BOMB_HIT_GROUND) {

@@ -1,7 +1,11 @@
 package spaceinv.model;
 
 
+import spaceinv.model.projectiles.Bomb;
 import spaceinv.model.projectiles.Rocket;
+import spaceinv.model.ships.Bomber;
+
+import java.awt.geom.Rectangle2D;
 
 import static spaceinv.model.SpaceInv.GAME_HEIGHT;
 import static spaceinv.model.SpaceInv.GAME_WIDTH;
@@ -14,43 +18,54 @@ public class Gun implements IPositionable{
     public static final double MAX_SPEED = 2;
     public static final double GUN_WIDTH = 30;
     public static final double GUN_HEIGHT = 40;
-    private double GUN_X;
-    private double GUN_Y;
-    private int GUN_DIR;
+
+    private double x,y;
+    private int dir = 0;
+
+    public Gun(){
+        this.x = GAME_WIDTH/2-GUN_WIDTH/2;
+        this.y = GAME_HEIGHT-GUN_HEIGHT;
+    }
 
     public Gun(double x, double y) {
-        this.GUN_X = x;
-        this.GUN_Y = y;
-        this.GUN_DIR = 0;
+        this.x = x;
+        this.y = y;
+        this.dir = 0;
     }
 
-    public Gun() {
-        this(GAME_WIDTH/2,GAME_HEIGHT-50);
+    public void moveGun(){
+        x += dir*MAX_SPEED;
+
+        if(x+GUN_WIDTH > GAME_WIDTH)
+            x = GAME_WIDTH-GUN_WIDTH;
+        else if(x < 0)
+            x = 0;
     }
 
-    private boolean isValidPositionX(double newPosX) {
-        if (newPosX > 0 && (newPosX+GUN_WIDTH) < GAME_WIDTH) {
-            return true;
+    public boolean checkHit(){
+        Rectangle2D r = new Rectangle2D.Double(x,y,GUN_WIDTH,GUN_HEIGHT);
+        for (Bomb b: Bomber.bombs){
+            if(r.intersects(b.getX(),b.getY(),b.getWidth(),b.getWidth())) {
+                Bomber.bombs.remove(b);
+                return true;
+            }
         }
+
         return false;
     }
 
-    public void updatePosition() {
-        double newPosX = GUN_X + MAX_SPEED * GUN_DIR;
-        if (newPosX != GUN_X && isValidPositionX(newPosX)) {
-            GUN_X = newPosX;
-        }
+    public void setX(double x){
+        this.x = x;
     }
 
+    @Override
     public double getX() {
-        return GUN_X;
-    }
-    public void setX(double x) {
-        this.GUN_X = x;
+        return x;
     }
 
+    @Override
     public double getY() {
-        return GUN_Y;
+        return y;
     }
 
     @Override
@@ -63,11 +78,7 @@ public class Gun implements IPositionable{
         return GUN_HEIGHT;
     }
 
-    public int getDir() {
-        return GUN_DIR;
-    }
-
-    public void setDir(int dir) {
-        this.GUN_DIR = dir;
+    public void setDir(int dir){
+        this.dir = dir;
     }
 }

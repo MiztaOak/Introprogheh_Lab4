@@ -10,6 +10,6 @@ import static spaceinv.model.SpaceInv.GAME_WIDTH;
  */
 public class Ground  {
 
-
+    public static final double GROUND_HEIGHT = GAME_HEIGHT;
 
 }

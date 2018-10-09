@@ -5,19 +5,13 @@ package spaceinv.model.ships;
  */
 public class BattleCruiser extends AbstractSpaceShip{
 
-    public BattleCruiser(double x, double y, int dir) {
+    public BattleCruiser(){
+        this(0,0);
+    }
+
+    public BattleCruiser(double x,double y){
         this.setX(x);
         this.setY(y);
-        this.setDir(dir);
-        this.setType("BattleCruiser");
-    }
-
-    public BattleCruiser(double x, double y) {
-        this(x,y,1);
-    }
-
-    public BattleCruiser() {
-        this(0,0, 1);
     }
 
     @Override
@@ -30,7 +24,6 @@ public class BattleCruiser extends AbstractSpaceShip{
         BattleCruiser copy = new BattleCruiser();
         copy.setX(this.getX());
         copy.setY(this.getY());
-        copy.setDir(this.getDir());
         return copy;
     }
 }

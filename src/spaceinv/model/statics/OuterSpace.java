@@ -7,6 +7,6 @@ import static spaceinv.model.SpaceInv.GAME_WIDTH;
  */
 public class OuterSpace  {
 
-    public static final double OUTERSPACE_HEIGHT = -5;
+    public static final double OUTERSPACE_HEIGHT = 5;
 
 }

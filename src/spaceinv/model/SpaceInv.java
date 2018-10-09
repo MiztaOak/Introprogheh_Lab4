@@ -6,6 +6,7 @@ import spaceinv.model.levels.ILevel;
 import spaceinv.model.levels.Level0;
 import spaceinv.model.projectiles.Rocket;
 import spaceinv.model.ships.AbstractSpaceShip;
+import spaceinv.model.ships.Bomber;
 import spaceinv.model.ships.ShipFormation;
 import spaceinv.model.statics.Ground;
 import spaceinv.model.statics.OuterSpace;
@@ -53,6 +54,8 @@ public class SpaceInv {
         gun = level.getGun();
         formation = level.getFormation();
         ships = formation.getShips();
+
+        points = 0;
     }
 
     public SpaceInv() {
@@ -69,18 +72,29 @@ public class SpaceInv {
     // ------ Game loop (called by timer) -----------------
 
     public void update(long now) {
-        formation.updateCollision(rocket, gun);
-        if (now - timeForLastMove >= shipMoveDelay) {
-            formation.updatePosition();
-            timeForLastMove = now;
+        for(int i = 0; i < Bomber.bombs.size(); i++){
+            Bomber.bombs.get(i).update();
         }
-        gun.updatePosition();
-        if (rocket != null) {
-            rocket.update();
-            if (!rocket.isAlive()) {
+        if(gun.checkHit()){
+            EventService.add(new Event(Event.Type.GAME_OVER));
+        }
+
+        if(rocket != null) {
+            formation.killShips(rocket);
+            if(rocket.getY()+rocket.getHeight() < OuterSpace.OUTERSPACE_HEIGHT)
                 rocket = null;
-            }
+            else
+                rocket.update();
         }
+
+        if(now - timeForLastMove >= shipMoveDelay){
+            timeForLastMove = now;
+            formation.updateFormation();
+        }
+        gun.moveGun();
+        if(rocket != null)
+            if(rocket.isHit())
+                rocket = null;
     }
 
     // ------------- Increase pressure on player
@@ -91,7 +105,7 @@ public class SpaceInv {
 
     public void fireGun() {
         if (rocket == null) {
-            rocket = new Rocket(gun.getX(), gun.getY(), GUN_WIDTH);
+            rocket = new Rocket(gun.getX()+GUN_WIDTH/2,gun.getY());
         }
     }
 
@@ -111,9 +125,11 @@ public class SpaceInv {
 
     public List<IPositionable> getPositionables() {
         List<IPositionable> ps = new ArrayList<>();
-       // TODO Add all to be rendered
+        ps.add(gun);
         ps.addAll(ships);
         ps.add(gun);
+        if(!Bomber.bombs.isEmpty())
+            ps.addAll(Bomber.bombs);
         if (rocket != null) {
             ps.add(rocket);
         }
