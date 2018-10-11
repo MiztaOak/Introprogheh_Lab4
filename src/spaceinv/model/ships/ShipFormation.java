@@ -8,6 +8,7 @@ import spaceinv.model.IPositionable;
 import spaceinv.model.projectiles.Rocket;
 import spaceinv.model.Gun;
 
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Random;
 
@@ -44,15 +45,15 @@ public class ShipFormation {
 
     // TODO Some method to remove ship hit by rocket
 
-    private boolean isHit(Rocket rocket, AbstractSpaceShip ship){
-        return rocket.getY() <= ship.getY()+ship.getHeight() && rocket.getY() >= ship.getY() &&
-                rocket.getX() <= ship.getX()+ship.getWidth() && rocket.getX() >= ship.getX();
+    private boolean isHit(Rectangle2D r, AbstractSpaceShip ship){
+        return r.intersects(ship.getX(),ship.getY(),ship.getWidth(),ship.getHeight());
     }
 
     public void killShips(Rocket rocket){
+        Rectangle2D r = new Rectangle2D.Double(rocket.getX(),rocket.getY(),rocket.getWidth(),rocket.getHeight());
         for(int i = 0; i < ships.size(); i++){
             AbstractSpaceShip ship = ships.get(i);
-            if (isHit(rocket, ship) && !rocket.isHit()) {
+            if (isHit(r, ship) && !rocket.isHit()) {
                 ships.remove(ship);
                 EventService.add(new Event(Event.Type.ROCKET_HIT_SHIP,new ePos(ship.getX(),ship.getY())));
                 rocket.setHit(true);
