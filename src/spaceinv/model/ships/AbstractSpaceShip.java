@@ -78,4 +78,8 @@ public abstract class AbstractSpaceShip  implements IPositionable {
     public double getHeight() {
         return SHIP_HEIGHT;
     }
+
+    public void setDir(int dir){
+        this.dir = dir;
+    }
 }
