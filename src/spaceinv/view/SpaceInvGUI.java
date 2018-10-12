@@ -137,6 +137,8 @@ public class SpaceInvGUI extends Application {
         if (evt.type == Event.Type.ROCKET_HIT_SHIP) {
             ePos b = (ePos)evt.data;
             renderExplosion(b.getX(),b.getY());
+            Assets rocketSound = Assets.INSTANCE;
+            rocketSound.rocketHitShip.play();
         } else if (evt.type == Event.Type.ROCKET_LAUNCHED) {
             // TODO
         } else if (evt.type == Event.Type.BOMB_HIT_GROUND) {
